@@ -462,6 +462,14 @@ class BipedalWalker(gym.Env, EzPickle):
         return state['right_leg_contact'] #state
     
     def step(self, masked_action):
+        if self.valid_actions[0][masked_action[0]] == 0:
+            print("invalid action taken!")
+        if self.valid_actions[1][masked_action[0]][masked_action[1]] == 0:
+            print("invalid action taken!")
+        if self.valid_actions[2][masked_action[0]][masked_action[1]][masked_action[2]] == 0:
+            print("invalid action taken!")
+        if self.valid_actions[3][masked_action[0]][masked_action[1]][masked_action[2]][masked_action[3]] == 0:
+            print("invalid action taken!")
         self.hull.ApplyForceToCenter((0, 20), True) # Uncomment this to receive a bit of stability help
 
         #print('in step', self.valid_actions[1][0])

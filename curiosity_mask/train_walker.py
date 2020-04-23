@@ -16,7 +16,8 @@ from experta import *
 from experta.fact import *
 import schema
 
-env = DummyVecEnv([walker.BipedalWalker])
+env = DummyVecEnv([walker.BipedalWalker] * 4)
+
 
 class Leg(Fact):
     side = Field(schema.Or("left", "right"), mandatory=True)
@@ -29,12 +30,14 @@ class Leg(Fact):
     gait = Field(schema.Or(1, 2, 3), mandatory=True)
     pass
 
+
 class Orchestration(Fact):
     condition = Field(schema.Or("deterministic", "fuzzy"), default='deterministic', mandatory=True)
     event = Field(schema.Or("selection", "blank"))
     gait = Field(schema.Or(1, 2, 3), mandatory=True, default=1)
     concept = Field(schema.Or(1, 2, 3))
     pass
+
 
 class Machine_Teaching(KnowledgeEngine):
 
@@ -213,6 +216,7 @@ class Machine_Teaching(KnowledgeEngine):
         print('Concept 3 Activated')
         pass
 
+
 class ActionMaskCallback(BaseCallback):
     """
     A custom callback that derives from ``BaseCallback``.
@@ -352,7 +356,7 @@ class ActionMaskCallback(BaseCallback):
 control_brain_callback = ActionMaskCallback()
 #selector_brain_callback = SelectionMaskCallback()
   
-control_brain = A2C(MlpPolicy, env, verbose=2) # PPO2 is the other option: tensorboard_log="walker/", nminibatches=1
+control_brain = PPO2(MlpPolicy, env, verbose=2)  # PPO2 is the other option: tensorboard_log="walker/", nminibatches=1
 control_brain.learn(250000, callback=control_brain_callback)
 
 #selector_brain = A2C(MlpPolicy, env, verbose=2) # PPO2 is the other option: tensorboard_log="walker/", nminibatches=1
